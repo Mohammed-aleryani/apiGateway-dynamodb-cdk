@@ -56,3 +56,5 @@ command.
  * `cdk docs`        open CDK documentation
 
 Enjoy!
+
+![alt text](https://github.com/Mohammed-aleryani/apiGateway-dynamodb-cdk/blob/master/architecture/Untitled%20Diagram.drawio%20(3).png)
