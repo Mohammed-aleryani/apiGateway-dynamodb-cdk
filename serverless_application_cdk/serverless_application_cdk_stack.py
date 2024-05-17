@@ -1,9 +1,9 @@
 from aws_cdk import (
-    # Duration,
     Stack,
     aws_lambda as _lambda,
     aws_apigatewayv2 as apigwv2,
-    aws_apigatewayv2_integrations as httpIntegration
+    aws_apigatewayv2_integrations as httpIntegration,
+    aws_dynamodb as dynamodb
 )
 from constructs import Construct
 
@@ -18,8 +18,11 @@ class ServerlessApplicationCdkStack(Stack):
             "beckendFunction",
             runtime=_lambda.Runtime.PYTHON_3_11,
             code=_lambda.Code.from_asset("lambda"),
-            handler="backend-lambda.lambda_handler",    
+            handler="backend-lambda.lambda_handler",
         )
+        
+        
+        
 
         http_api = apigwv2.HttpApi(self, "serverless-application-api")
         backend_lambda_integration = httpIntegration.HttpLambdaIntegration(
@@ -29,3 +32,11 @@ class ServerlessApplicationCdkStack(Stack):
             methods=[apigwv2.HttpMethod.GET],
             integration=backend_lambda_integration
         )
+
+        table = dynamodb.TableV2(
+            self, "Users",
+            partition_key=dynamodb.Attribute(
+                name="userId", type=dynamodb.AttributeType.STRING)
+        )
+
+        table.grant_read_write_data(backendLambda)
