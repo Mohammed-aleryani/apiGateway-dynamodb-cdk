@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_apigatewayv2 as apigwv2,
     aws_apigatewayv2_integrations as httpIntegration,
     aws_dynamodb as dynamodb,
+    RemovalPolicy
 
 )
 from constructs import Construct
@@ -17,7 +18,8 @@ class ServerlessApplicationCdkStack(Stack):
         table = dynamodb.TableV2(
             self, "Users",
             partition_key=dynamodb.Attribute(
-                name="userId", type=dynamodb.AttributeType.STRING)
+                name="userId", type=dynamodb.AttributeType.STRING),
+            removal_policy=RemovalPolicy.DESTROY,
         )
 
         backendLambda = _lambda.Function(
