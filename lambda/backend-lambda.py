@@ -1,13 +1,15 @@
 import boto3
 import json
+import os
 
-print('Loading function')
+
+table_name=os.environ['DYNAMODB_TABLE_NAME']
 dynamodb = boto3.resource('dynamodb')
 
 
 def lambda_handler(event, context):
     print(event)
-    table = dynamodb.Table('ServerlessApplicationCdkStack-Users0A0EEA89-EPF37SQEPAKR')
+    table = dynamodb.Table(table_name)
     print(event['requestContext']['http']['method'])
     if event['requestContext']['http']['method'] == 'GET':
         # Read user information
@@ -41,8 +43,7 @@ def lambda_handler(event, context):
     elif event['requestContext']['http']['method'] == 'POST':
         # Write user information (assuming data is in the request body)
         try:
-            user_data = json.loads(event['body'])
-            print(user_data)
+            user_data = event['queryStringParameters']
             table.put_item(Item=user_data)
             return {
                 'statusCode': 201,
